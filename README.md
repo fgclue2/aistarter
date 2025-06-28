@@ -15,8 +15,8 @@ Gasoline allows for **any** device or emulator to be used.
 It's just an HTTP server. In the original version, CORS is set to '*'. In this version that is fixed because it is not a good idea.
 
 ## To-do
-[ ] Connect to ADB server
-[ ] Boot up an emulator
-[ ] Connect via USB
+- [ ] Connect to ADB server
+- [ ] Boot up an emulator
+- [ ] Connect via USB
 
 **We are not affiliated with MIT!** This is an independent project.
