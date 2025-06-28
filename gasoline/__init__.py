@@ -1,6 +1,8 @@
 from os import PathLike
 from pathlib import Path
-from flask import Flask, request
+from subprocess import call, check_output
+from re import match
+from flask import Flask
 from gasoline.emulator import isRunning
 
 # TODO: replace rall calls to adb with the adb protocol
@@ -13,7 +15,8 @@ emulator: PathLike[str] | None = None
 emulatorName: str | None = None
 
 # this makes no fucking sense but it works: https://github.com/mit-cml/appinventor-sources/blob/master/appinventor/misc/emulator-support/config.py
-VERSION = '%d.%d.%d%s' % (26, 255, 0, '')
+VERSION = "%d.%d.%d%s" % (26, 255, 0, "")
+
 
 @app.after_request
 def add_headers(response):
