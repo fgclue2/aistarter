@@ -20,18 +20,18 @@ VERSION = "%d.%d.%d%s" % (26, 255, 0, "")
 
 @app.after_request
 def add_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Headers'] = 'origin, content-type'
-    response.headers['Content-Type'] = 'application/json'
+    response.headers["Access-Control-Allow-Origin"] = (
+        "*"  # todo: set to https://ai2.appinventor.mit.edu
+    )
+    response.headers["Access-Control-Allow-Headers"] = "origin, content-type"
+    response.headers["Content-Type"] = "application/json"
 
     return response
 
-@app.route('/ping/')
+
+@app.route("/ping/")
 def ping():
-    return {
-        "status": "OK",
-        "version": VERSION
-    }
+    return {"status": "OK", "version": VERSION}
 
 @app.route('/utest/')
 def utest():
