@@ -33,6 +33,7 @@ def add_headers(response):
 def ping():
     return {"status": "OK", "version": VERSION}
 
+
 @app.route("/echeck/")
 @app.route("/ucheck/")
 @app.route("/utest/")
@@ -42,6 +43,11 @@ def test():
         return {"status": "OK", "device": device, "version": VERSION}
     else:
         return {"status": "NO", "version": VERSION}
+
+
+@app.route("/start/")
+def run():
+    call([emulator, emulatorName])
 
 
 
