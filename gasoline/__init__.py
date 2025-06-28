@@ -50,6 +50,18 @@ def run():
     call([emulator, emulatorName])
 
 
+@app.route("/replstart/<string:device>")
+def companionstart(device: str):
+    check_output('"%s" -s %s forward tcp:8001 tcp:8001' % (adb, device), shell=True)
+    if match("emulator.*", device):  # Only fake the menu key for the emulator
+        check_output('"%s" -s %s shell input keyevent 82' % (adb, device), shell=True)
+    check_output(
+        '"%s" -s %s shell am start -a android.intent.action.VIEW -n edu.mit.appinventor.aicompanion3/.Screen1 --ez rundirect true'
+        % (adb, device),
+        shell=True,
+    )
+    return ""
+
 
 def start(adb_: PathLike[str], emulator_: PathLike[str], name: str):
     global adb
