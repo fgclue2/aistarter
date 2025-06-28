@@ -67,7 +67,7 @@ def start(adb_: PathLike[str], emulator_: PathLike[str], name: str):
     global adb
     global emulator
     global emulatorName
-    
+
     adb = Path(adb_)
     emulator = Path(emulator_)
     emulatorName = name
