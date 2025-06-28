@@ -33,20 +33,17 @@ def add_headers(response):
 def ping():
     return {"status": "OK", "version": VERSION}
 
-@app.route('/utest/')
-def utest():
+@app.route("/echeck/")
+@app.route("/ucheck/")
+@app.route("/utest/")
+def test():
     device = isRunning(emulatorName, adb)
     if device:
-        return {
-            "status": "OK",
-            "device": device,
-            "version": VERSION
-        }
+        return {"status": "OK", "device": device, "version": VERSION}
     else:
-        return {
-            "status": "NO",
-            "version": VERSION
-        }
+        return {"status": "NO", "version": VERSION}
+
+
 
 def start(adb_: PathLike[str], emulator_: PathLike[str], name: str):
     global adb
