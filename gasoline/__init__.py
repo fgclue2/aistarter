@@ -5,6 +5,7 @@ from re import match
 from flask import Flask
 from gasoline.emulator import isRunning
 
+#TODO: TEST USB SUPPORT
 # TODO: replace rall calls to adb with the adb protocol
 
 app = Flask(__name__)
