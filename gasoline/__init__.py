@@ -22,7 +22,7 @@ VERSION = "%d.%d.%d%s" % (26, 255, 0, "")
 @app.after_request
 def add_headers(response):
     response.headers["Access-Control-Allow-Origin"] = (
-        "*"  # todo: set to https://ai2.appinventor.mit.edu
+        "https://ai2.appinventor.mit.edu"
     )
     response.headers["Access-Control-Allow-Headers"] = "origin, content-type"
     response.headers["Content-Type"] = "application/json"
