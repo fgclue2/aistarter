@@ -24,4 +24,19 @@ def isRunning(isEmulator: bool, name: str, adb: PathLike[str]) -> bool | str:
         if x
     ]
     print("Data:", data)
+    for line in data:
+        device = line.split('\t')[0]
+        if isEmulator and not device.startswith("emulator-"): continue
+
+        client.send_command("shell:getprop ro.boot.qemu.avd_name")
+
+        code = client.connection.recv(4).decode()
+        print(code) #TODO: REMOVE THIS
+        if code != "OKAY":
+            raise AdbError("Code isn't OKAY")
+
+        print(client.connection.recv(int(client.connection.recv(4).decode(), 16)))
+
+    if len(data) == 0:
+        return False
     return False
