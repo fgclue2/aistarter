@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 adb: PathLike[str] | None = None
 emulator: PathLike[str] | None = None
+corsRule: str = '*'
 
 emulatorName: str | None = None
 
@@ -22,7 +23,7 @@ VERSION = "%d.%d.%d%s" % (26, 255, 0, "")
 @app.after_request
 def add_headers(response):
     response.headers["Access-Control-Allow-Origin"] = (
-        "https://ai2.appinventor.mit.edu"
+        corsRule
     )
     response.headers["Access-Control-Allow-Headers"] = "origin, content-type"
     response.headers["Content-Type"] = "application/json"
@@ -64,13 +65,15 @@ def companionstart(device: str):
     return ""
 
 
-def start(adb_: PathLike[str], emulator_: PathLike[str], name: str):
+def start(adb_: PathLike[str], emulator_: PathLike[str], name: str, cors: str):
     global adb
     global emulator
     global emulatorName
+    global corsRule
 
     adb = Path(adb_)
     emulator = Path(emulator_)
     emulatorName = name
+    corsRule = cors
 
     app.run(port=8004)
