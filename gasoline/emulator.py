@@ -1,21 +1,27 @@
 from subprocess import check_output
-from gasoline import adb
+from gasoline.adb import AdbClient, AdbError
 from os import PathLike
 
-def isRunning(name: str, adb: PathLike[str]) -> bool | str:
-    #TODO: REPLACE WITH ADB CONNECTION
+
+def isRunning(isEmulator: bool, name: str, adb: PathLike[str]) -> bool | str:
     """
     Returns False if there is no device running or an str with the name of the device.
     """
-    result = check_output('%s devices' % adb, shell=True)
 
-    lines = result.decode("utf-8").split('\n')[1:]
+    client = AdbClient("127.0.0.1", 5037)
 
-    for line in lines:
-        deviceName = line.split('\t')[0]
-        if deviceName == '': continue
+    client.send_command("host:devices")
 
-        adbName = check_output('%s -s %s emu avd name' % (adb, deviceName), shell=True).decode('utf-8').split('\r')[0]
-        if adbName == name.removeprefix("@"): return deviceName
-    
+    code = client.connection.recv(4).decode()
+    if code != "OKAY":
+        raise AdbError("Code isn't OKAY")
+
+    data = [
+        x
+        for x in client.connection.recv(int(client.connection.recv(4).decode(), 16))
+        .decode()
+        .split("\n")
+        if x
+    ]
+    print("Data:", data)
     return False

@@ -44,15 +44,21 @@ def ping():
 
 
 @app.route("/echeck/")
-@app.route("/ucheck/")
-@app.route("/utest/")
-def test():
-    device = isRunning(emulatorName, adb)
+def etest():
+    device = isRunning(True, emulatorName, adb)
     if device:
         return {"status": "OK", "device": device, "version": VERSION}
     else:
         return {"status": "NO", "version": VERSION}
 
+@app.route("/ucheck/")
+@app.route("/utest/")
+def utest():
+    device = isRunning(False, emulatorName, adb)
+    if device:
+        return {"status": "OK", "device": device, "version": VERSION}
+    else:
+        return {"status": "NO", "version": VERSION}
 
 @app.route("/start/")
 def run():
@@ -61,12 +67,10 @@ def run():
 
 @app.route("/replstart/<string:device>")
 def companionstart(device: str):
-    check_output('"%s" -s %s forward tcp:8001 tcp:8001' % (adb, device), shell=True)
     if match("emulator.*", device):  # Only fake the menu key for the emulator
-        check_output('"%s" -s %s shell input keyevent 82' % (adb, device), shell=True)
-    check_output(
-        '"%s" -s %s shell am start -a android.intent.action.VIEW -n edu.mit.appinventor.aicompanion3/.Screen1 --ez rundirect true'
-        % (adb, device),
+        call(f'{adb} -s {device} shell input keyevent 82', shell=True)
+    call(
+        f'{adb} -s {device} shell am start -a android.intent.action.VIEW -n edu.mit.appinventor.aicompanion3/.Screen1 --ez rundirect true',
         shell=True,
     )
     return ""
