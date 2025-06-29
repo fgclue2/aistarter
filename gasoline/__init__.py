@@ -72,6 +72,25 @@ def companionstart(device: str):
     return ""
 
 
+@app.route('/emulatorreset/')
+def emulatorreset():
+    call(f"{adb} emu restart", shell=True)
+    return ''
+
+
+def shutdown():
+    print("==> BYE BYE! <==")
+    if cleanup.killEmulator: call(f"{adb} emu kill", shell=True)
+    if cleanup.killServer: call(f"{adb} kill-server", shell=True)
+    exit(0)
+
+@app.route('/reset/')
+def reset():
+    call(f"{adb} emu kill", shell=True)
+    return {
+        "status": "OK",
+        "version": VERSION
+    }
 
 def start(adb_: PathLike[str], emulator_: PathLike[str], name: str, cors: str, cleanupOptions: CleanupOptions):
     global adb
