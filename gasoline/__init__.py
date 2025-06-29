@@ -1,12 +1,20 @@
-from os import PathLike
+from os import PathLike, system
 from pathlib import Path
-from subprocess import call, check_output
+from subprocess import call
 from re import match
+from atexit import register as onexit
 from flask import Flask
 from gasoline.emulator import isRunning
 
+class CleanupOptions():
+    def __init__(self, killEmulator: bool, killServer: bool):
+        self.killEmulator = killEmulator
+        self.killServer = killServer
+
 #TODO: TEST USB SUPPORT
 # TODO: replace rall calls to adb with the adb protocol
+
+cleanup = CleanupOptions(True, True)
 
 app = Flask(__name__)
 
@@ -17,8 +25,7 @@ corsRule: str = '*'
 emulatorName: str | None = None
 
 # this makes no fucking sense but it works: https://github.com/mit-cml/appinventor-sources/blob/master/appinventor/misc/emulator-support/config.py
-VERSION = "%d.%d.%d%s" % (26, 255, 0, "")
-
+VERSION = "26.255.0"
 
 @app.after_request
 def add_headers(response):
@@ -65,15 +72,22 @@ def companionstart(device: str):
     return ""
 
 
-def start(adb_: PathLike[str], emulator_: PathLike[str], name: str, cors: str):
+
+def start(adb_: PathLike[str], emulator_: PathLike[str], name: str, cors: str, cleanupOptions: CleanupOptions):
     global adb
     global emulator
     global emulatorName
     global corsRule
+    global cleanup
 
     adb = Path(adb_)
     emulator = Path(emulator_)
     emulatorName = name
     corsRule = cors
+    cleanup = cleanupOptions
+
+    call(f"{adb} start-server", shell=True)
+
+    onexit(shutdown)
 
     app.run(port=8004)

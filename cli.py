@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from os import environ
 from os.path import join, exists
 from pathlib import Path
-from gasoline import start
+from gasoline import start, CleanupOptions
 
 def abort(message: str):
     print(message)
@@ -19,6 +19,8 @@ parser = ArgumentParser(
 parser.add_argument('emulator', help='Emulator name (usually @Emulator_Name)')
 parser.add_argument('-a', '--android', default=environ.get('ANDROID_HOME'), help='Android Home (usually $ANDROID_HOME)')
 parser.add_argument('-c', '--cors', default="https://ai2.appinventor.mit.edu", help='CORS Rule (usually https://ai2.appinventor.mit.edu)')
+parser.add_argument('-k', '--kill-emu', action='store_true', help='Kill emulator')
+parser.add_argument('-s', '--kill-adb-server', action='store_true', help='Kill ADB server')
 
 args = parser.parse_args()
 
@@ -41,4 +43,4 @@ print()
 print("App Inventor should be waiting on port 8004.")
 print("All is okay, so I'll start the webserver now:")
 
-start(Path(ADB), Path(EMULATOR), args.emulator, args.cors)
+start(Path(ADB), Path(EMULATOR), args.emulator, args.cors, CleanupOptions(args.kill_emu, args.kill_adb_server))
